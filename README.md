@@ -13,6 +13,7 @@ The dataset: [Don't Get Kicked!](https://www.kaggle.com/c/DontGetKicked)
 Our team
 ========
 #### Delta-t
+![Alt text](https://raw.githubusercontent.com/glennq/DS-GA1001-Project/master/imgs/delta-t-logo-full.png)
 
 Team leader: Jiyuan Qian
 
