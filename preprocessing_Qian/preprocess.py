@@ -60,7 +60,7 @@ def transformVar(df):
     # Drop VNZIP1 due to too many levels and redundancy with VNST
     df = df.drop(["Model", "VNZIP1"], axis = 1)
     # Use regex to stardardize format for SubModel
-    df.SubModel = df.SubModel.replace({r'([A-Za-z0-9]*\s)([A-Za-z0-9\.\-]*\s)([A-Za-z0-9\.\s\-/])*': r'\1\2'}, regex=True)
+    df.SubModel = df.SubModel.replace({r'([A-Za-z0-9]*\s)([A-Za-z0-9\.\-]*)\s([A-Za-z0-9\.\s\-/])*': r'\1\2'}, regex=True)
     # Transform to dummy variables
     for i in df.columns:
         if df[i].dtype == 'object' or i == 'BYRNO':
