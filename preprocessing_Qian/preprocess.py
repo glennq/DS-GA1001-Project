@@ -80,7 +80,7 @@ def standardizeDF(train_X, test_X):
     There's no return value
     '''
     # Identify columns to standardize
-    toStd = df.columns[range(2, 13) + range(14, 43)]
+    toStd = train_X.columns[range(2, 13) + range(14, 43)]
     # Calculate means and standard deviations for those columns
     mean = train_X[toStd].mean()
     std = train_X[toStd].std()
