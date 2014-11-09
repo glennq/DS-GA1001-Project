@@ -1,2 +1,7 @@
 *py[cod]
 *so
+
+# ipython notebook files
+#################
+*.ipynb
+
