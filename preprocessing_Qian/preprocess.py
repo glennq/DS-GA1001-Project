@@ -63,7 +63,7 @@ def transformVar(df):
     df.SubModel = df.SubModel.replace({r'([A-Za-z0-9]*\s)([A-Za-z0-9\.\-]*\s)([A-Za-z0-9\.\s\-/])*': r'\1\2'}, regex=True)
     # Transform to dummy variables
     for i in df.columns:
-        if df[i].dtype == 'object':
+        if df[i].dtype == 'object' or i == 'BYRNO':
             temp = df[i].value_counts()
             # if the variable has more than 30 class levels, aggregate less frequent levels to OTHER
             if len(temp) > 30:
