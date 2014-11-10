@@ -4,7 +4,7 @@
 from __future__ import division
 
 import numpy as np
-from sklearn import tree
+from sklearn import ensemble
 from sklearn.grid_search import ParameterGrid
 from sklearn.metrics import roc_curve, auc
 from dpark import DparkContext
@@ -35,6 +35,7 @@ def dt_model():
     param_grid = {'min_samples_split': range(1, 10000, 1000),
                   'min_samples_leaf': range(1, 10000, 1000),
                  # 'max_leaf_nodes': [0, 100, 1000, 10000],
+                  'n_estimators': [10, 30, 50, 100, 200, 500],
                   'max_depth': [None, 100, 1000, 10000]}
     param_grid = grid_generator(param_grid)
 
@@ -44,8 +45,8 @@ def dt_model():
     def map_iter(param):
         idx = param[0][0] * 2 + param[0][1]
         param = param[1]
-        m = tree.DecisionTreeClassifier(criterion='entropy', **param)
-        print '%d, Start traininig Decision Tree model.' % idx
+        m = ensemble.RandomForestClassifier(criterion='gini', **param)
+        print '%d, Start traininig Random Forest model.' % idx
         m = m.fit(tr_x, tr_y)
         print '%d, Training done.' % idx
         proba = m.predict_proba(va_x)
@@ -62,13 +63,13 @@ def dt_model():
                             map_iter
                             ).collect()
     
-    file_record = open('dt_result.pkl', 'w')
+    file_record = open('rf_result.pkl', 'w')
     pickle.dump(result_record, file_record)
     file_record.close()
     
     # testing
     opt = reduce(lambda x, y: x if x[2] > y[2] else y, result_record)
-    m = tree.DecisionTreeClassifier(criterion='entropy', **opt[1])
+    m = ensemble.RandomForestClassifier(criterion='gini', **opt[1])
     m = m.fit(tr_x, tr_y)
     proba = m.predict_proba(te_x)
     fpr, tpr, thresh = roc_curve(te_y, proba[:, 1])
