@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import pandas as pd
 from sklearn.cross_validation import train_test_split
@@ -70,7 +71,7 @@ def transformVar(df):
                 df[i] = df[i].replace(to_replace=temp.index[temp < 100], value="OTHER")
             df = pd.concat([df, pd.get_dummies(df[i], prefix=i)], axis=1)
             df = df.drop(i, axis=1)
-            
+
     return df
 
 def standardizeDF(train_X, test_X):
@@ -89,14 +90,14 @@ def standardizeDF(train_X, test_X):
     test_X[toStd] = (test_X[toStd] - mean) / std
 
 
-if __name__ == '__main__':
+def load_data():
     # The path to data files, default to be empty so that data files are considered to be in the same directory as this file
-    path = ""
-    fpath = path + "training.csv"
+    path = ".."
+    fpath = os.path.join(path, "training.csv")
 
     # Read and clean the dataset
     dataset = cleanVehData(fpath)
-    
+
     # Add differences between reference prices
     addPriceDiff(dataset)
 
@@ -115,5 +116,5 @@ if __name__ == '__main__':
 
     # Standardize train_X and test_X
     standardizeDF(train_X, test_X)
-    
-    
+
+    return train_X, train_y, test_X, test_y
