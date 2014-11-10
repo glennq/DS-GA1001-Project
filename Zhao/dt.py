@@ -68,7 +68,7 @@ def dt_model():
     
     # testing
     opt = reduce(lambda x, y: x if x[2] > y[2] else y, result_record)
-    m_te = tree.DecisionTreeClassifier(criterion='entropy', **opt[1])
+    m = tree.DecisionTreeClassifier(criterion='entropy', **opt[1])
     m = m.fit(tr_x, tr_y)
     proba = m.predict_proba(te_x)
     fpr, tpr, thresh = roc_curve(te_y, proba[:, 1])
