@@ -6,7 +6,9 @@ from __future__ import division
 import numpy as np
 from sklearn import tree
 from sklearn.grid_search import ParameterGrid
+from sklearn.metrics import roc_curve, auc
 from dpark import DparkContext
+import pickle
 
 
 def load_data():
@@ -14,7 +16,13 @@ def load_data():
     train_y = np.loadtxt('../data/train_y.csv', delimiter=',')
     test_x = np.loadtxt('../data/test_x.csv', delimiter=',')
     test_y = np.loadtxt('../data/test_y.csv', delimiter=',')
-    return train_x, train_y, test_x, test_y
+    # Generate validation set
+    idx = np.random.permutation(train_x.shape[0])
+    tr_sz = len(idx) * 5 // 7 
+    train_x_split, train_y_split = train_x[idx[:tr_sz], :], \
+                                   train_y[idx[:tr_sz]]
+    val_x, val_y = train_x[idx[tr_sz: ], :], train_y[idx[tr_sz:]]
+    return train_x_split, train_y_split, val_x, val_y, test_x, test_y
 
 
 def grid_generator(param_grid):
@@ -23,10 +31,10 @@ def grid_generator(param_grid):
 
 
 def dt_model():
-    tr_x, tr_y, te_x, te_y = load_data()
+    tr_x, tr_y, va_x, va_y, te_x, te_y = load_data()
     param_grid = {'min_samples_split': range(1, 10000, 1000),
                   'min_samples_leaf': range(1, 10000, 1000),
-                  'max_leaf_nodes': [0, 100, 1000, 10000],
+                 # 'max_leaf_nodes': [0, 100, 1000, 10000],
                   'max_depth': [None, 100, 1000, 10000]}
     param_grid = grid_generator(param_grid)
 
@@ -40,19 +48,32 @@ def dt_model():
         print '%d, Start traininig Decision Tree model.' % idx
         m = m.fit(tr_x, tr_y)
         print '%d, Training done.' % idx
-        res = m.predict(te_x)
-        acc = len(np.where(res == te_y)[0]) / len(te_y)
-        print '%d, Accuracy is: %f' % (idx, acc)
-        return idx, param, acc
+        proba = m.predict_proba(va_x)
+        fpr, tpr, thresh = roc_curve(va_y, proba[:, 1])
+        auc_ = auc(fpr, tpr)
+        print '%d, AUC is %f' % (idx, auc_)
+        return idx, param, auc_
 
     print 'It will train %d models' % len(param_grid)
-    acc_total = dpark_ctx.makeRDD(
+    result_record = dpark_ctx.makeRDD(
                             param_grid, 50
                             ).enumerate(
                             ).map(
                             map_iter
                             ).collect()
-    np.savetxt('result.csv', np.array(acc_total), delimiter=',')
+    
+    file_record = open('result.pkl', 'w')
+    pickle.dump(result_record, file_record)
+    file_record.close()
+    
+    # testing
+    opt = reduce(lambda x, y: x if x[2] > y[2] else y, result_record)
+    m_te = tree.DecisionTreeClassifier(criterion='entropy', **opt[1])
+    m = m.fit(tr_x, tr_y)
+    proba = m.predict_proba(te_x)
+    fpr, tpr, thresh = roc_curve(te_y, proba[:, 1])
+    auc_ = auc(fpr, tpr)
+    print 'Testing AUC is %f' % auc_
 
 
 def main():
