@@ -7,36 +7,10 @@ import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 from sklearn.cross_validation import train_test_split
 
-def load_data():
+from utility import load_data
+from utility import split_data
+from utility import data_pca
 
-    """
-    train_X.csv, train_y.csv are preprocessed datasets from Glenn Qian.
-    This function is to load preprocessed datasets and generate validation set.
-    """
-
-    train_X = pd.read_csv('train_X.csv', sep='\t')
-    train_y = pd.read_csv('train_y.csv', sep='\t')
-    train_X = train_X.drop('PurchDate', axis = 1)
-    train_X = train_X.drop('VehYear', axis = 1)
-    train_X = train_X.drop('Unnamed: 0', axis = 1)
-    train_y = train_y.drop('Unnamed: 0', axis = 1)
-    #split trainning set to trainning and validation set 
-    train_x, validation_x, train_y, validation_y = train_test_split(train_X, train_y, test_size=0.2, random_state=4531)
-    validation_y = validation_y.ravel()
-    train_y = train_y.ravel()
-    return train_x, validation_x, train_y, validation_y
-
-def data_pca(components, train_x, validation_x):
-    """
-    This function uses PCA to reduce dimensions of dataset
-    """
-    pca = PCA(n_components=components)
-    pca.fit(train_x)
-    train_x_pca = pca.transform(train_x)
-    validation_x_pca = pca.transform(validation_x)
-    train_x_pca_df = pd.DataFrame(train_x_pca)
-    validation_x_pca_df = pd.DataFrame(validation_x_pca)
-    return train_x_pca_df, validation_x_pca_df
 
 def svm_model(train_x_pca_df,train_y,validation_x_pca_df,validation_y):
 
@@ -68,8 +42,10 @@ def svm_model(train_x_pca_df,train_y,validation_x_pca_df,validation_y):
     plt.show()
 
 def main():
-    train_x, validation_x, train_y, validation_y = load_data()
-    train_x_pca_df, validation_x_pca_df = data_pca(0.95, train_x, validation_x)
+    train_X, train_Y = load_data('train_X.csv', 'train_y.csv')
+    train_x, validation_x, train_y, validation_y = split_data(train_X, train_Y, 0.2)
+    train_x_pca_df = data_pca(0.95, train_X, train_x)
+    validation_x_pca_df = data_pca(0.95, train_X, validation_x)
     svm_model(train_x_pca_df,train_y,validation_x_pca_df,validation_y)
 
 if __name__ == '__main__':
