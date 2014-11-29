@@ -5,3 +5,7 @@
 #################
 *.ipynb
 
+# pickle and joblib files
+#################
+*.pkl
+*.npy

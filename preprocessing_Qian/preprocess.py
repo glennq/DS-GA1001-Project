@@ -2,6 +2,7 @@ import os
 import numpy as np
 import pandas as pd
 from sklearn.cross_validation import train_test_split
+import cPickle
 
 def cleanVehData(fpath):
     """
@@ -77,10 +78,11 @@ def transformVar(df):
             df = df.drop(i, axis=1)
     return df
 
-def standardizeDF(train_X, test_X):
+def standardizeDF(train_X, test_X, create_helper=False):
     """
-    This function takes as input two pandas DataFrames and standardizes all numerical (non-binary non-date) columns in place
-    Date and year are left unstandardized for further analysis
+    This function takes as input two pandas DataFrames and standardizes all numerical (non-binary non-date) columns
+    in place. Date and year are left unstandardized for further analysis
+    It also creates helper file for deployment if create_helper is true
     There's no return value
     """
     # Identify columns to standardize
@@ -88,21 +90,41 @@ def standardizeDF(train_X, test_X):
     # Calculate means and standard deviations for those columns
     mean = train_X[toStd].mean()
     std = train_X[toStd].std()
+    # Create helper file for deployment if create_helper is true
+    if create_helper:
+        helper = {'mean' : mean, 'std' : std}
+        dpath = os.path.join(os.pardir, 'Deployment_Qian', 'helper2.pkl')
+        output = open(dpath, 'wb')
+        cPickle.dump(helper, output)
+        output.close()
     # Standardize both train_X and test_X with the same parameters
     train_X[toStd] = (train_X[toStd] - mean) / std
     test_X[toStd] = (test_X[toStd] - mean) / std
 
-def load_data():
+def load_data(create_helper=False):
     """
     This function wraps up the above four functions. It reads the dataset, cleans it, does transformation,
     splits it into training and test set, and finally standardize the data.
+    It also creates helper file for deployment if create_helper is true
     Change the fpath if data is in another directory
     """
-    # The path to data files
-    path = ".."
-    fpath = os.path.join(path, "training.csv")
+    # The path to data files, assuming it's in the folder "Data" which is in the same directory as
+    # the git directory
+    path = os.pardir
+    fpath = os.path.join(path, os.pardir, "Data", "training.csv")
     # Read and clean the dataset
     dataset = cleanVehData(fpath)
+    # create helper file for deployment if create_helper is true
+    if create_helper:
+        helper = {}
+        for i in dataset.TopThreeAmericanName.value_counts().index:
+            helper[i] = dataset.Make[dataset.TopThreeAmericanName == i].value_counts().index
+        helper['Make_OTHER'] = dataset.Make.value_counts()[dataset.Make.value_counts() < 100].index
+        helper['Columns'] = dataset.columns
+        dpath = os.path.join(path, 'Deployment_Qian', 'helper.pkl')
+        output = open(dpath, 'wb')
+        cPickle.dump(helper, output)
+        output.close()
     # Add differences between reference prices
     addPriceDiff(dataset)
     # Transform categorical data to dummy variables
@@ -116,5 +138,5 @@ def load_data():
     train_y = pd.DataFrame(train_y, columns=['IsBadBuy'])
     test_y = pd.DataFrame(test_y, columns=['IsBadBuy'])
     # Standardize train_X and test_X
-    standardizeDF(train_X, test_X)
+    standardizeDF(train_X, test_X, create_helper)
     return train_X, train_y, test_X, test_y
