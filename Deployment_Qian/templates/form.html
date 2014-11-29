@@ -1,0 +1,38 @@
+{% from "_formhelpers.html" import render_field %}
+<form method=post action="/">
+<dl>
+    {{ render_field(form.Auction) }}
+    {{ render_field(form.VehicleAge) }}
+    {{ render_field(form.Make) }}
+    {{ render_field(form.Trim) }}
+    {{ render_field(form.SubModel) }}
+    {{ render_field(form.Color) }}
+    {{ render_field(form.Transmission) }}
+    {{ render_field(form.WheelType) }}
+    {{ render_field(form.VehOdo) }}
+    {{ render_field(form.Nationality) }}
+    {{ render_field(form.Size) }}
+    {{ render_field(form.MMRAcquisitionAuctionAveragePrice) }}
+    {{ render_field(form.MMRAcquisitionAuctionCleanPrice) }}
+    {{ render_field(form.MMRAcquisitionRetailAveragePrice) }}
+    {{ render_field(form.MMRAcquisitonRetailCleanPrice) }}
+    {{ render_field(form.MMRCurrentAuctionAveragePrice) }}
+    {{ render_field(form.MMRCurrentAuctionCleanPrice) }}
+    {{ render_field(form.MMRCurrentRetailAveragePrice) }}
+    {{ render_field(form.MMRCurrentRetailCleanPrice) }}
+    {{ render_field(form.VNST) }}
+    {{ render_field(form.VehBCost) }}
+    {{ render_field(form.IsOnlineSale) }}
+    {{ render_field(form.WarrantyCost) }}
+  </dl>
+  <p><input type=submit value=Report>
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+  {% endwith %}
+</form>
