@@ -92,7 +92,7 @@ def standardizeDF(train_X, test_X, create_helper=False):
     std = train_X[toStd].std()
     # Create helper file for deployment if create_helper is true
     if create_helper:
-        helper = {'mean' : mean, 'std' : std}
+        helper = {'mean' : mean, 'std' : std, , 'columns' : train_X.columns[2:]}
         dpath = os.path.join(os.pardir, 'Deployment_Qian', 'helper2.pkl')
         output = open(dpath, 'wb')
         cPickle.dump(helper, output)
