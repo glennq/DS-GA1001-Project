@@ -9,6 +9,11 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def inputData():
+    """
+    This functions gets form data from http request, tranform it to conform with preprocessed training data,
+    and applies pre-trained classifier on the data, and finally output the result on web page.
+    It makes use of Flask and some template files to create the online form which accepts input.
+    """
     form = ReportForm(request.form)
     if request.method == 'POST' and form.validate():
         # read helper data which are in two dictionaries

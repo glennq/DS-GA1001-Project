@@ -1,6 +1,10 @@
 from wtforms import Form, fields, validators
 
 class ReportForm(Form):
+    """
+    This class defines the online form as well as the validators
+    The entries are variables necessary in our modeling
+    """
     Auction = fields.SelectField('Auction Provider for the Purchase', [validators.InputRequired()], \
                                  choices=[('ADESA', 'ADESA'), ('MANHEIM', 'MANHEIM'), ('OTHER', 'Other')])
     VehicleAge = fields.IntegerField('Vehicle Age in Year',  [validators.InputRequired(), \

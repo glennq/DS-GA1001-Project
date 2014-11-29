@@ -34,8 +34,8 @@ def transformVar(df):
 
 def standardizeDF(df, mean, std):
     """
-    This function takes as input two pandas DataFrames and standardizes all numerical (non-binary non-date) columns in place
-    Date and year are left unstandardized for further analysis
+    This function takes as input one pandas DataFrames and the mean and standard deviation calculated from training data.
+    It then standardizes all numerical (non-binary non-date) columns in place according to the given mean and std
     There's no return value
     """
     # Identify columns to standardize
