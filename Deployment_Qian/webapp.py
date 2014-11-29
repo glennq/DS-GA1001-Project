@@ -4,6 +4,7 @@ from sklearn import linear_model
 from olform import *
 from functions import *
 import cPickle
+import os
 app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
@@ -17,8 +18,8 @@ def inputData():
         pk_file2 = open('helper2.pkl', 'rb')
         helper2 = cPickle.load(pk_file2)
         pk_file2.close()
-        # read classifier
-        clf = joblib.load('Lr.pkl') 
+        # read classifier from directory 'model'
+        clf = joblib.load(os.path.join('model', 'Lr.pkl')) 
         # create dataframe from form data
         df = pd.DataFrame(form.data, index=[0])
         # add column TopThreeAmericanName
