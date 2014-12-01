@@ -10,3 +10,13 @@ For Decisiontree model, I adopt Scikit-learn off-the-shell model. In total I tra
 
 For Random Forest, I trained 2400 models with different 'min_samples_split' , 'min_sample_leaf', 'max_depth' and 'n_estimators' (from 10 through 500). The best model selected by validation set is {'max_depth': 1000, 'min_samples_leaf': 1, 'min_samples_split': 1, 'n_estimators': 500} and it obtains AUC of 71.7 on testing set.
 
+
+2014-11-30
+-------
+The best parameter for Decision Tree is: {'min_samples_split': 1001, 'max_depth': 10000, 'min_samples_leaf': 1}
+
+The best parameter for Random Forest is: {'min_samples_split': 1, 'n_estimators': 500, 'max_depth': 1000, 'min_samples_leaf': 1}
+
+Corresponded FPR and TPR and saved as .csv file which could be found in this directory. I will finish a short report involving some basic introduction of two models, and the steps how we make them work.
+
+My doc could be seen at: [HERE](https://onedrive.live.com/redir?resid=7E0F473212415A7D!111&authkey=!AKkSv48Eti2tkOA&ithint=file%2cdocx)
