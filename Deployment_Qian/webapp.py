@@ -14,6 +14,7 @@ def inputData():
     and applies pre-trained classifier on the data, and finally output the result on web page.
     It makes use of Flask and some template files to create the online form which accepts input.
     """
+    global clf
     form = ReportForm(request.form)
     if request.method == 'POST' and form.validate():
         # read helper data which are in two dictionaries
@@ -23,8 +24,6 @@ def inputData():
         pk_file2 = open('helper2.pkl', 'rb')
         helper2 = cPickle.load(pk_file2)
         pk_file2.close()
-        # read classifier from directory 'model'
-        clf = joblib.load(os.path.join('model', 'Lr.pkl')) 
         # create dataframe from form data
         df = pd.DataFrame(form.data, index=[0])
         # add column TopThreeAmericanName
@@ -55,5 +54,7 @@ def inputData():
     return render_template('form.html', form=form)
 
 if __name__ == '__main__':
+    # read classifier from directory 'model'
+    clf = joblib.load(os.path.join('model', 'rf.pkl')) 
     app.secret_key = 'why would I tell you my secret k'
     app.run()
