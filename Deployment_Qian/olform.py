@@ -6,7 +6,7 @@ class ReportForm(Form):
     The entries are variables necessary in our modeling
     """
     Auction = fields.SelectField('Auction Provider for the Purchase', [validators.InputRequired()], \
-                                 choices=[('ADESA', 'ADESA'), ('MANHEIM', 'MANHEIM'), ('OTHER', 'Other')])
+                                 choices=[('ADESA', 'ADESA'), ('MANHEIM', 'MANHEIM'), ('OTHER', 'OTHER')])
     VehicleAge = fields.IntegerField('Vehicle Age in Year',  [validators.InputRequired(), \
                                                               validators.NumberRange(min=0, max=20)])
     Make = fields.SelectField('Vehicle Manufacturer', [validators.InputRequired()], \
@@ -112,8 +112,8 @@ class ReportForm(Form):
                                        ('VA', 'VA'), ('WA', 'WA'), ('WV', 'WV')])
     VehBCost = fields.FloatField('Acquisition cost paid for the vehicle at time of purchase', \
                                  [validators.InputRequired(), validators.NumberRange(min=0, max=100000)])
-    IsOnlineSale = fields.IntegerField('If purchased online', [validators.InputRequired(), \
-                                                               validators.NumberRange(min=0, max=1)])
+    IsOnlineSale = fields.SelectField('If purchased online', [validators.InputRequired()], \
+                                      choices=[('1', 'YES'), ('2', 'NO')])
     WarrantyCost = fields.FloatField('Warranty price (term=36month and millage=36K)', \
                                      [validators.InputRequired(), validators.NumberRange(min=0, max=20000)])
     

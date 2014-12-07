@@ -26,6 +26,8 @@ def inputData():
         pk_file2.close()
         # create dataframe from form data
         df = pd.DataFrame(form.data, index=[0])
+        # convert IsOnlineSale to integer value
+        df.IsOnlineSale = int(df.IsOnlineSale)
         # add column TopThreeAmericanName
         TopThree = "OTHER"
         if df.Make[0] in helper["GM"]:
@@ -50,7 +52,7 @@ def inputData():
         # predict using classifier
         prob = clf.predict_proba(np.float64(df))
         # output result
-        flash(str(prob[:, 1]))
+        flash('The predicted probability is ' + str(prob[0, 1]))
     return render_template('form.html', form=form)
 
 if __name__ == '__main__':

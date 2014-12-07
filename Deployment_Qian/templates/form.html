@@ -1,4 +1,8 @@
 {% from "_formhelpers.html" import render_field %}
+<!doctype html>
+<title>Online Form</title>
+<link rel="stylesheet" type="text/cs" href="{{ url_for('static', filename='style.css') }}">
+<body>
 <form method=post action="/">
 <dl>
     {{ render_field(form.Auction) }}
@@ -25,7 +29,7 @@
     {{ render_field(form.IsOnlineSale) }}
     {{ render_field(form.WarrantyCost) }}
   </dl>
-  <p><input type=submit value=Report>
+  <p class=submitbuttom><input type=submit value=Report></p>
   {% with messages = get_flashed_messages() %}
   {% if messages %}
     <ul class=flashes>
@@ -36,3 +40,4 @@
   {% endif %}
   {% endwith %}
 </form>
+</body>
