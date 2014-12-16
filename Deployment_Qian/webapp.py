@@ -1,18 +1,21 @@
 from flask import Flask, request, render_template, flash
 from sklearn.externals import joblib
-from sklearn import linear_model
 from olform import *
 from functions import *
+import numpy as np
 import cPickle
 import os
 app = Flask(__name__)
 
+
 @app.route('/', methods=['GET', 'POST'])
 def inputData():
     """
-    This functions gets form data from http request, tranform it to conform with preprocessed training data,
-    and applies pre-trained classifier on the data, and finally output the result on web page.
-    It makes use of Flask and some template files to create the online form which accepts input.
+    This functions gets form data from http request, tranform it to conform
+    with preprocessed training data, and applies pre-trained classifier on the
+    data, and finally output the result on web page.
+    It makes use of Flask and some template files to create the online form
+    which accepts input.
     """
     global clf
     form = ReportForm(request.form)
@@ -57,6 +60,6 @@ def inputData():
 
 if __name__ == '__main__':
     # read classifier from directory 'model'
-    clf = joblib.load(os.path.join('model', 'rf.pkl')) 
+    clf = joblib.load(os.path.join('model', 'rf.pkl'))
     app.secret_key = 'why would I tell you my secret k'
     app.run()
